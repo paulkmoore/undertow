@@ -117,6 +117,14 @@ public class UndertowOptions {
     public static final Option<Boolean> ALWAYS_SET_KEEP_ALIVE = Option.simple(UndertowOptions.class, "ALWAYS_SET_KEEP_ALIVE", Boolean.class);
 
     /**
+     * If this is true then a Date header will be added to all responses. The HTTP spec says this header should be added to all
+     * responses, unless the server does not have an accurate clock.
+     * <p/>
+     * Defaults to true
+     */
+    public static final Option<Boolean> ALWAYS_SET_DATE = Option.simple(UndertowOptions.class, "ALWAYS_SET_DATE", Boolean.class);
+
+    /**
      * Maximum size of a buffered request, in bytes
      * <p/>
      * Requests are not usually buffered, the most common case is when performing SSL renegotiation for a POST request, and the post data must be fully
@@ -134,6 +142,15 @@ public class UndertowOptions {
      * default is false
      */
     public static final Option<Boolean> RECORD_REQUEST_START_TIME = Option.simple(UndertowOptions.class, "RECORD_REQUEST_START_TIME", Boolean.class);
+
+    /**
+     * If this is true then Undertow will allow non-escaped equals characters in unquoted cookie values.
+     * <p/>
+     * Unquoted cookie values may not contain equals characters. If present the value ends before the equals sign. The remainder of the cookie value will be dropped.
+     * <p/>
+     * default is false
+     */
+    public static final Option<Boolean> ALLOW_EQUALS_IN_COOKIE_VALUE = Option.simple(UndertowOptions.class, "ALLOW_EQUALS_IN_COOKIE_VALUE", Boolean.class);
 
     private UndertowOptions() {
 

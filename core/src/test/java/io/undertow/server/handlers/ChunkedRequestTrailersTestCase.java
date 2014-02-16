@@ -18,6 +18,7 @@
 
 package io.undertow.server.handlers;
 
+import io.undertow.UndertowOptions;
 import io.undertow.conduits.ChunkedStreamSourceConduit;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.protocol.http.HttpServerConnection;
@@ -25,12 +26,15 @@ import io.undertow.server.HttpServerExchange;
 import io.undertow.testutils.AjpIgnore;
 import io.undertow.testutils.DefaultServer;
 import io.undertow.testutils.HttpClientUtils;
+import io.undertow.testutils.ProxyIgnore;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.HeaderValues;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.xnio.OptionMap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,13 +46,18 @@ import java.net.Socket;
  */
 @RunWith(DefaultServer.class)
 @AjpIgnore
+@ProxyIgnore
 public class ChunkedRequestTrailersTestCase {
 
     private static volatile HttpServerConnection connection;
 
+    private static OptionMap existing;
+
     @BeforeClass
     public static void setup() {
         final BlockingHandler blockingHandler = new BlockingHandler();
+        existing = DefaultServer.getUndertowOptions();
+        DefaultServer.setUndertowOptions(OptionMap.create(UndertowOptions.ALWAYS_SET_DATE, false));
         DefaultServer.setRootHandler(blockingHandler);
         blockingHandler.setRootHandler(new HttpHandler() {
             @Override
@@ -86,6 +95,11 @@ public class ChunkedRequestTrailersTestCase {
                 }
             }
         });
+    }
+
+    @AfterClass
+    public static void cleanup() {
+        DefaultServer.setUndertowOptions(existing);
     }
 
     /**
